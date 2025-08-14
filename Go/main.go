@@ -41,28 +41,24 @@ func main() {
 	results := make(map[string]interface{})
 
   sys_desc_result := walk(params, sys_descr_oid)
-  results[sys_descr_oid] = sys_desc_result
-
   sys_object_id_result := walk(params, sys_object_id_oid)
-  results[sys_object_id_oid] = sys_object_id_result
-
   sys_uptime_result := walk(params, sys_uptime_oid)
-  results[sys_uptime_oid] = sys_uptime_result
-
   sys_contact_result := walk(params, sys_contact_oid)
-  results[sys_contact_oid] = sys_contact_result
-
   sys_name_result := walk(params, sys_name_oid)
-  results[sys_name_oid] = sys_name_result
-
   sys_location_result := walk(params, sys_location_oid)
+  
+  results[sys_descr_oid] = sys_desc_result
+  results[sys_object_id_oid] = sys_object_id_result
+  results[sys_uptime_oid] = sys_uptime_result
+  results[sys_contact_oid] = sys_contact_result
+  results[sys_name_oid] = sys_name_result
   results[sys_location_oid] = sys_location_result
 
 	// show results
-	for oid, value := range results {
-		fmt.Printf("%s: %v\n", oid, value)
-	}
-  fmt.Printf("\n")
+	// for oid, value := range results {
+	// 	fmt.Printf("%s: %v\n", oid, value)
+	// }
+  // fmt.Printf("\n")
 
   endTime := time.Now()
   fmt.Printf("SNMP Walk concluído em %s\n", endTime.Format(time.RFC3339))

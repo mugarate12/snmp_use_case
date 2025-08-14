@@ -28,7 +28,7 @@ $result[$sys_contact_oid] = $sys_contact;
 $result[$sys_name_oid] = $sys_name;
 $result[$sys_location_oid] = $sys_location;
 
-print_r($result);
+// print_r($result);
 echo "\n";
 
 $endTime = microtime(true);

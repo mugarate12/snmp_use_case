@@ -18,3 +18,17 @@ run-php:
 
 test-php:
 	docker compose -f ./Php/compose.yml run --rm test
+
+run-all-three-times:
+	echo "Running Go application..."
+	make run-go
+	make run-go
+	make run-go
+
+	echo "----------------------------------------"
+	echo ""
+	echo "Running PHP application..."
+	make run-php
+	make run-php
+	make run-php
+	
