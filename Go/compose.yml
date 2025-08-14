@@ -1,0 +1,7 @@
+services:
+  app:
+    build: .
+    container_name: go_snmp_example_app
+    volumes:
+      - .:/app
+    network_mode: "host"

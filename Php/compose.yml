@@ -1,0 +1,7 @@
+services:
+  app:
+    build: .
+    working_dir: /app
+    volumes:
+      - ./main.php:/app/main.php
+    network_mode: "host"
