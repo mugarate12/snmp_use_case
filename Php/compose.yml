@@ -5,3 +5,12 @@ services:
     volumes:
       - ./main.php:/app/main.php
     network_mode: "host"
+
+  test:
+    build: .
+    working_dir: /app
+    volumes:
+      - ./main.php:/app/main.php
+      - ./tests:/app/tests
+    network_mode: "host"
+    command: ["php", "/root/.composer/vendor/bin/phpunit", "--testdox", "tests"]

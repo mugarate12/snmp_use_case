@@ -48,6 +48,12 @@ To run the Go implementation, use the following command:
 make run-go
 ```
 
+To run tests for the Go implementation, use the following command:
+
+```bash
+make test-go
+```
+
 ## PHP Implementation
 
 To buid the PHP implementation, use the following command:
@@ -60,4 +66,10 @@ To run the PHP implementation, use the following command:
 
 ```bash
 make run-php
+```
+
+To run tests for the PHP implementation, use the following command:
+
+```bash
+make test-php
 ```

@@ -7,8 +7,14 @@ build-go:
 run-go:
 	docker compose -f ./Go/compose.yml run --rm app
 
+test-go:
+	docker compose -f ./Go/compose.yml run --rm test
+
 build-php:
 	docker compose -f ./Php/compose.yml build
 
 run-php:
 	docker compose -f ./Php/compose.yml run --rm app
+
+test-php:
+	docker compose -f ./Php/compose.yml run --rm test

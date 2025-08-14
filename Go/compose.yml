@@ -5,3 +5,12 @@ services:
     volumes:
       - .:/app
     network_mode: "host"
+    command: ["go", "run", "./main.go"]
+
+  test:
+    build: .
+    container_name: go_snmp_example_test
+    volumes:
+      - .:/app
+    network_mode: "host"
+    command: ["go", "test", "./..."]
