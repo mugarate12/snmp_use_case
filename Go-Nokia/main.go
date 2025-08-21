@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gosnmp/gosnmp"
@@ -43,26 +44,63 @@ func main() {
 	}
 	defer params.Conn.Close()
 
-  info_oid := "iso.3.6.1.2.1.1.1.0"
-  info, err := get(params, info_oid)
-  if err != nil {
-    log.Fatalf("Erro ao obter informações do dispositivo: %v", err)
-    os.Exit(1)
-  }
-  fmt.Printf("Informações do dispositivo: %v\n", info)
-
   index_oid := "1.3.6.1.4.1.637.61.1.35.10.1.1.24"
   index_result := walk(params, index_oid)
 
-  for oid, value := range index_result {
-    fmt.Printf("%s: %v\n", oid, value)
-  }
+  for oid := range index_result {
+    // Extract the last sequence of digits from oid (similar to preg_match('/(\d+)(?!.*\d)/', ...))
+    var client string
+    oidParts := strings.Split(oid, ".")
 
-	// show results
-	// for oid, value := range results {
-	// 	fmt.Printf("%s: %v\n", oid, value)
-	// }
-  // fmt.Printf("\n")
+    for i := len(oidParts) - 1; i >= 0; i-- {
+      if _, err := strconv.Atoi(oidParts[i]); err == nil {
+        client = oidParts[i]
+        break
+      }
+    }
+
+    serial_oid := fmt.Sprintf("1.3.6.1.4.1.637.61.1.35.10.1.1.5.%s", client)
+    serial_result, _ := get(params, serial_oid)
+    
+    var serialHex string
+    if b, ok := serial_result.([]byte); ok {
+      serialHex = fmt.Sprintf("%X", b)
+    } else {
+      serialHex = fmt.Sprintf("%v", serial_result)
+    }
+    
+    if serialHex != SERIAL {
+      continue
+    }
+
+    rx_oid := fmt.Sprintf("1.3.6.1.4.1.637.61.1.35.10.14.1.2.%s", client)
+    tx_oid := fmt.Sprintf("1.3.6.1.4.1.637.61.1.35.10.14.1.4.%s", client)
+    volt_oid := fmt.Sprintf("1.3.6.1.4.1.637.61.1.35.10.14.1.3.%s", client)
+    bias := fmt.Sprintf("1.3.6.1.4.1.637.61.1.35.10.14.1.5.%s", client)
+    temp := fmt.Sprintf("1.3.6.1.4.1.637.61.1.35.10.14.1.6.%s", client)
+    name := fmt.Sprintf("1.3.6.1.4.1.637.61.1.35.10.1.1.24.%s", client)
+
+    rx, _ := get(params, rx_oid)
+    tx, _ := get(params, tx_oid)
+    volt, _ := get(params, volt_oid)
+    bias_val, _ := get(params, bias)
+    temp_val, _ := get(params, temp)
+    name_val_raw, _ := get(params, name)
+    
+    var name_val string
+    if b, ok := name_val_raw.([]byte); ok {
+      name_val = string(b)
+    } else {
+      name_val = fmt.Sprintf("%v", name_val_raw)
+    }
+
+    fmt.Printf("Rx Power: %v dBm\n", rx)
+    fmt.Printf("Tx Power: %v dBm\n", tx)
+    fmt.Printf("Voltage: %v V\n", volt)
+    fmt.Printf("Bias Current: %v mA\n", bias_val)
+    fmt.Printf("Temperature: %v °C\n", temp_val)
+    fmt.Printf("Name: %v\n", name_val)
+  }
 
   endTime := time.Now()
   fmt.Printf("SNMP Walk concluído em %s\n", endTime.Format(time.RFC3339))
