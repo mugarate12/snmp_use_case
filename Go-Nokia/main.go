@@ -50,14 +50,12 @@ func main() {
   for oid := range index_result {
     // Extract the last sequence of digits from oid (similar to preg_match('/(\d+)(?!.*\d)/', ...))
     var client string
-    oidParts := strings.Split(oid, ".")
+    oidParts := strings.LastIndexByte(oid, '.')
 
-    for i := len(oidParts) - 1; i >= 0; i-- {
-      if _, err := strconv.Atoi(oidParts[i]); err == nil {
-        client = oidParts[i]
-        break
-      }
+    if (oidParts == -1) {
+      continue;
     }
+    client = oid[oidParts+1:]
 
     serial_oid := fmt.Sprintf("1.3.6.1.4.1.637.61.1.35.10.1.1.5.%s", client)
     serial_result, _ := get(params, serial_oid)

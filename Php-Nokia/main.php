@@ -31,7 +31,6 @@ foreach ($Index as $key => $val) {
 
   $nome = str_replace("\"", "", $nome);
 
-  echo "ONU: $v\n";
   echo "Serial: $serial\n";
   echo "Nome: $nome\n";
   echo "RX: $rx\n";
