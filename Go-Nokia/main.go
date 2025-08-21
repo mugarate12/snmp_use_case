@@ -43,7 +43,14 @@ func main() {
 	}
 	defer params.Conn.Close()
 
-  // info_oid := "iso.3.6.1.2.1.1.1.0"
+  info_oid := "iso.3.6.1.2.1.1.1.0"
+  info, err := get(params, info_oid)
+  if err != nil {
+    log.Fatalf("Erro ao obter informações do dispositivo: %v", err)
+    os.Exit(1)
+  }
+  fmt.Printf("Informações do dispositivo: %v\n", info)
+
   index_oid := "1.3.6.1.4.1.637.61.1.35.10.1.1.24"
   index_result := walk(params, index_oid)
 
@@ -87,6 +94,24 @@ func walk(params *gosnmp.GoSNMP, oid string) map[string]interface{} {
 	}
 
   return results
+}
+
+func get(params *gosnmp.GoSNMP, oid string) (interface{}, error) {
+  result, err := params.Get([]string{oid})
+  if err != nil {
+    return nil, fmt.Errorf("erro ao fazer SNMP Get: %v", err)
+  }
+
+  if len(result.Variables) == 0 {
+    return nil, fmt.Errorf("nenhum resultado encontrado para OID %s", oid)
+  }
+
+  // by default, gosnmp returns raw data (in bytes), for example: 
+  // if value is "OCTET STRING" it will be returned as []byte (bytes array)
+  // if value is "INTEGER" it will be returned as int64
+  // if value is "STRING" it will be returned as string
+  // if value is "COUNTER" it will be returned as uint64
+  return result.Variables[0].Value, nil
 }
 
 func LoadConfig(path ...string) {
