@@ -1,5 +1,5 @@
 <?php
-$host = '172.16.100.50';
+$host = '';
 $community = 'public';
 $serial_filter = "414C434CFC653AE2";
 
